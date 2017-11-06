@@ -1,0 +1,23 @@
+version: '2'
+
+volumes:
+ database_data:
+services:
+  mysql:
+    image: mysql:latest
+    expose:
+    - 3306
+    volumes:
+    - database_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD="rootroot"
+      - MYSQL_USER="root"
+      - MYSQL_PASSWORD="root"
+      - MYSQL_DATABASE="mundi_challenge"
+  web:
+    build: .
+    command: php -S 0.0.0.0:8000 -t /mundi-challenge
+    ports:
+      - "80:8000"
+    volumes:
+      - .:/mundi-challenge    
