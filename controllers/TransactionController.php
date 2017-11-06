@@ -23,7 +23,16 @@ class TransactionController extends Controller
     public function actionIndex()
     {
 
-        return $this->render('index');
+        $text_file = "3;19.01;Visa;511111111111;10;22;LUKE SKYWALKER;123;\n";
+        $text_file .= "4;19.02;Visa;511111111111;10;22;LUKE SKYWALKER;123\n";
+        $text_file .= "2;19.03;Visa;511111111111;10;22;LUKE SKYWALKER;123\n";
+        $text_file .= "3;19.04;Visa;511111111111;10;22;LUKE SKYWALKER;123\n";
+        $text_file .= "1;19.05;Visa;511111111111;10;22;LUKE SKYWALKER;123\n";
+        
+        
+       return $this->render('index', [
+            'file' => $text_file,
+        ]);
 
     }
 
@@ -97,4 +106,42 @@ class TransactionController extends Controller
 
     }
 
+    public function actionReadFile()
+    {
+        header('Content-Type: application/json');
+        $text_file= "";
+        $file = "";
+        $max = 10;
+        
+        if ($_FILES['file']) {
+            $csv = Yii::$app->request->post('file');
+            $handle = fopen($_FILES['file']['tmp_name'], "r");
+            if ($handle !== FALSE) {
+                while (($data = fgetcsv($handle, 0, ";")) !== FALSE) {
+                    $num = count($data);
+                    $file = "";
+                    
+                    foreach ($data as $value) {
+                     if ($value && trim($value))
+                        {
+                            $file .= trim($value).";";
+                        }   
+                    }
+                    
+                    $text_file .= $file."\n";
+                }
+                fclose($handle);
+            }            
+            
+            
+        }
+        
+        /**/
+
+
+       return $this->render('index', [
+            'file' => $text_file,
+        ]);
+
+    }
 }

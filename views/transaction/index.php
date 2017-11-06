@@ -5,13 +5,24 @@
 .site-about{
 	padding: 10%;	
 }
+.site-about .row{
+	padding-bottom: 2em
+}
+.site-about .submit-file{
+	margin:0 auto;
+}
 .site-about .col-left{
-	width: 50%;
+	width: 70%;
 	float: left;
 }
 .site-about .col-right{
-	width: 50%;
-	margin-left: 50%
+	width: 30%;
+	margin-left: 70%;
+	text-align: right;
+}
+.site-about textarea{
+	width: 90%;
+	min-height: 300px
 }
 </style>
 
@@ -28,7 +39,8 @@
 		$(".submit-file").change(function(){
 			url = $(this).val();
 			console.log(url)
-			readFile(url);
+			$("#form-file").submit();
+			//readFile(url);
 		})
 			
 		var sendCsv = function(pagination){
@@ -152,57 +164,37 @@
 
 
 
-	function readFile(url){
-	    $.ajax({
-	        type: "GET",
-	        url: url,
-	        dataType: "text",
-	        success: function(data) {processData(data);}
-	     });
-	}
-
-	function processData(allText) {
-	    var record_num = 5;  // or however many elements there are in each row
-	    var allTextLines = allText.split(/\r\n|\n/);
-	    var entries = allTextLines[0].split(',');
-	    var lines = [];
-
-	    var headings = entries.splice(0,record_num);
-	    while (entries.length>0) {
-	        var tarr = [];
-	        for (var j=0; j<record_num; j++) {
-	            tarr.push(headings[j]+":"+entries.shift());
-	        }
-	        lines.push(tarr);
-	    }
-
-	    console.log(lines)
-	    $("#csv").val(lines)
-	}
+		function readFile(url){
+		    $.ajax({
+		        type: "POST",
+		        url:"?r=transaction/read-file", 
+		        data: {file:url},
+		        enctype: 'multipart/form-data',
+		        success: function(data) {processData(data);}
+		     });
+		}
 
 
 	})
 </script>
 
 <div class="site-about">
-	<form action="#" method="POST" id="form_transaction" >
+	<div class="row center">
+		<form  action="?r=transaction/read-file" method="POST" id="form-file" enctype="multipart/form-data" >
+			<input type="file" value="Procurar file" name="file" class=" submit-file" >
+		</form>
+	</div>
+	<form action="#" method="POST" id="form_transaction" enctype="multipart/form-data" >
 		<div class="row">
 			<div class="col-left">
-				<p>Adicione as transaçoes no formato CSV.</p>
+				<textarea id="csv" name="csv"><?php echo ($file); ?></textarea>
 			</div>
 			<div class="col-right">
-				<textarea id="csv" name="csv">3 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ;  </textarea>
+				<p>Adicione as transaçoes no formato CSV.</p>
+				<div class="row right">
+					<input type="submit" value="Enviar" class="btn" >
+				</div>
 			</div>
-		</div>
-		<div class="row">
-			<input type="file" value="Procurar file" class="btn submit-file" >
-		</div>
-		<div class="row">
-			<input type="submit" value="Enviar" class="btn" >
 		</div>
 		<div class="row">
 			<table class="table" id="table">
@@ -211,131 +203,3 @@
 		</div>
 	</form>
 </div>
-
-<!--
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 19.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-1 ; 19.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-3 ; 19.06 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-0 ; 19.01 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 19.02 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-2 ; 39.03 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.04 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; 
-4 ; 39.05 ; Visa ; 511111111111 ; 10 ; 22 ; LUKE SKYWALKER ; 123 ; -->
