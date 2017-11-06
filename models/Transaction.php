@@ -16,6 +16,8 @@ use Yii;
  * @property integer $card_year
  * @property string $card_name
  * @property integer $card_cvv
+ * @property string $status
+ * @property string $response
  */
 class Transaction extends \yii\db\ActiveRecord
 {
@@ -33,10 +35,11 @@ class Transaction extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idtransaction'], 'required'],
-            [['idtransaction', 'priority', 'card_number', 'card_month', 'card_year', 'card_cvv'], 'integer'],
             [['value'], 'number'],
+            [['priority', 'card_number', 'card_month', 'card_year', 'card_cvv'], 'integer'],
+            [['response'], 'string'],
             [['card_brand', 'card_name'], 'string', 'max' => 45],
+            [['status'], 'string', 'max' => 50],
         ];
     }
 
@@ -55,38 +58,19 @@ class Transaction extends \yii\db\ActiveRecord
             'card_year' => 'Card Year',
             'card_name' => 'Card Name',
             'card_cvv' => 'Card Cvv',
+            'status' => 'Status',
+            'response' => 'Response',
         ];
     }
-
-    /**
-     * @inheritdoc
-     * @return TransactionQuery the active query used by this AR class.
-     */
-    public static function find()
+    public static function validateAndparseTransactionToArray($str_line)
     {
-        return new TransactionQuery(get_called_class());
-    }
+        $array_line = preg_split("/(;)/", $str_line);
 
-
-    public static function validateAndparseTransactionToArray($strLine)
-    {
-        $arrayLine = preg_split("/(;)/", $strLine);
-
-        if (count ($arrayLine) == 8 || count ($arrayLine) == 9)
+        if (count ($array_line) == 8 || count ($array_line) == 9)
         {
-            /*
-            echo $arrayLine[0] . " - ";
-            echo $arrayLine[1] . " - ";
-            echo $arrayLine[2] . " - ";
-            echo $arrayLine[3] . " - ";
-            echo $arrayLine[4] . " - ";
-            echo $arrayLine[5] . " - ";
-            echo $arrayLine[6] . " - ";
-            echo $arrayLine[7] . " - ";
-
-            echo "<br />";*/
-            return $arrayLine;
+            return $array_line;
         }
         return false;
     }
+
 }

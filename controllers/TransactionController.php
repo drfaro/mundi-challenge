@@ -13,10 +13,8 @@ use app\models\ContactForm;
 class TransactionController extends Controller
 {
 
-    
-
     /**
-     * Displays about page.
+     * Displays Index page.
      *
      * @return Response|string
      */
@@ -36,11 +34,24 @@ class TransactionController extends Controller
 
     }
 
-    /**
-     * Displays about page.
-     *
-     * @return Response|string
-     */
+    
+    
+
+    public function actionList()
+    {
+        $transactions = new \app\models\Transaction();
+        
+        
+        $list_transactions = $transactions::find()->all() ;
+
+        return $this->render('list', [
+            'list_transactions'=>$list_transactions
+        ]);
+
+    }
+
+    
+    
     public function actionFormatOrdernation()
     {
         header('Content-Type: application/json');
@@ -136,12 +147,29 @@ class TransactionController extends Controller
             
         }
         
-        /**/
-
 
        return $this->render('index', [
             'file' => $text_file,
         ]);
 
+    }
+    
+    public function actionSaveLog()
+    {
+        
+        $transaction = new \app\models\Transaction();
+        $transaction->priority = Yii::$app->request->post("Priority" );
+        $transaction->value = Yii::$app->request->post("AmountInCents" );
+        $transaction->card_brand = Yii::$app->request->post("CreditCardBrand" );
+        $transaction->card_number = Yii::$app->request->post("CreditCardNumber" );
+        $transaction->card_month = Yii::$app->request->post("ExpMonth" );
+        $transaction->card_year = Yii::$app->request->post("ExpYear" );
+        $transaction->card_name = Yii::$app->request->post("HolderName" );
+        $transaction->card_cvv = Yii::$app->request->post("SecurityCode" );
+        $transaction->status = Yii::$app->request->post("status" );
+        $transaction->response = Yii::$app->request->post("response" );
+        
+        
+        return $transaction->save();
     }
 }

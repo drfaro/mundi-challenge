@@ -113,3 +113,32 @@ a.desc:after {
 .nav > li > form > button.logout:focus {
     outline: none;
 }
+
+
+.navbar-inverse{
+    
+}
+.site-about{
+    padding: 10%;   
+}
+.site-about .row{
+    padding-bottom: 2em
+}
+.site-about .submit-file{
+    margin:0 auto;
+}
+.site-about .col-left{
+    width: 70%;
+    float: left;
+}
+.site-about .col-right{
+    width: 30%;
+    margin-left: 70%;
+    text-align: right;
+}
+.site-about textarea{
+    width: 90%;
+    min-height: 300px
+}
+
+
