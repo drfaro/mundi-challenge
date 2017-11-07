@@ -28,6 +28,15 @@ class TransactionController extends Controller
         $text_file .= "1;19.05;Visa;511111111111;10;22;LUKE SKYWALKER;123\n";
         
         
+       $transaction = new \app\models\Transaction();
+       
+       
+       try{
+            $transaction->priority = 1;
+        } catch (\yii\base\InvalidConfigException $exception){
+            $transaction->createTable();
+        }
+        
        return $this->render('index', [
             'file' => $text_file,
         ]);
@@ -39,10 +48,17 @@ class TransactionController extends Controller
 
     public function actionList()
     {
+        $transactions = [];
         $transactions = new \app\models\Transaction();
+            
+        try{
+            $list_transactions = $transactions::find()->all();
+        } catch (yii\db\Exception $exception){
+            $transactions->createTable();
+            $list_transactions = $transactions::find()->all();
+        }
         
         
-        $list_transactions = $transactions::find()->all() ;
 
         return $this->render('list', [
             'list_transactions'=>$list_transactions
@@ -82,7 +98,6 @@ class TransactionController extends Controller
             krsort($array_transactions,true);
             
             $count = 0;
-            //$pagination = $max + $pagination;
             $array_paginaton = [];
             foreach ($array_transactions as $key_transactions => $array_transaction) {
                 
@@ -97,7 +112,6 @@ class TransactionController extends Controller
                     }
                     
                     array_push($array_paginaton[$key_transactions],$transaction);
-                    //array_push($array_trnsactions[$key], $array_current);
                   }elseif(($pagination+$max) == $count){
                       echo json_encode($array_paginaton);
                       exit();
@@ -169,7 +183,12 @@ class TransactionController extends Controller
         $transaction->status = Yii::$app->request->post("status" );
         $transaction->response = Yii::$app->request->post("response" );
         
-        
-        return $transaction->save();
+        try{
+            $transaction->save();
+        } catch (yii\db\Exception $exception){
+            $transactions->createTable();
+            $transaction->save();
+        }
+        return true;
     }
 }

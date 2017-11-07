@@ -53,6 +53,7 @@ $config = [
         */
     ],
     'params' => $params,
+    'defaultRoute' => 'transaction',
 ];
 
 if (YII_ENV_DEV) {

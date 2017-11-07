@@ -72,5 +72,28 @@ class Transaction extends \yii\db\ActiveRecord
         }
         return false;
     }
+    
+    public function createTable()
+    {
+        $sql = "CREATE DATABASE IF NOT EXISTS `mundi-challenge`;
+                USE `mundi-challenge`;
+                 CREATE TABLE `transaction` (
+                   `idtransaction` int(11) NOT NULL AUTO_INCREMENT,
+                   `value` decimal(20,0) DEFAULT NULL,
+                   `priority` int(11) DEFAULT NULL,
+                   `card_brand` varchar(45) DEFAULT NULL,
+                   `card_number` int(11) DEFAULT NULL,
+                   `card_month` int(11) DEFAULT NULL,
+                   `card_year` int(11) DEFAULT NULL,
+                   `card_name` varchar(45) DEFAULT NULL,
+                   `card_cvv` int(11) DEFAULT NULL,
+                   `status` varchar(50) DEFAULT NULL,
+                   `response` text,
+                   PRIMARY KEY (`idtransaction`)
+                 ) 
+               ";
+        Yii::$app->db->createCommand($sql)->execute();
+        
+    }
 
 }

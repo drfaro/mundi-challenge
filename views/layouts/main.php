@@ -67,17 +67,13 @@ AppAsset::register($this);
     $(document).ready(function(){
 
         $("#form_transaction").submit(function(){
-
             sendCsv(0);
             return false;
         })
         
-
         $(".submit-file").change(function(){
             url = $(this).val();
-            console.log(url)
             $("#form-file").submit();
-            //readFile(url);
         })
             
         var sendCsv = function(pagination){
@@ -89,29 +85,17 @@ AppAsset::register($this);
                 data:{ csv: csv , pagination:pagination }
               })
               .done(function() {
-                //alert( "success" );
               })
               .fail(function() {
-                //alert( "error" );
               })
               .always(function() {
-                //alert( "complete" );
               }
             );
              
-            // Perform other work here ...
              
-            // Set another completion function for the request above
             jqxhr.always(function(data_csv) {
-                console.log("complete")
-                console.log(data_csv)
-                console.log(data_csv.length)
-                //data_csv = JSON.parse(data_csv)
-                console.log(Object.keys(data_csv).length)
 
                 if (Object.keys(data_csv).length > 0 && data_csv != "[]"){
-                    console.log("entrou")
-                    //data_csv = JSON.parse(data_csv)
                     showTransaction(data_csv);
                     sendCsv(pagination+10);
                     count ++;
@@ -123,9 +107,7 @@ AppAsset::register($this);
         var showTransaction = function(list_priority){
             array_key = Object.keys(list_priority);
             count_array_key = array_key
-            console.log(array_key);
             array_key = array_key.reverse()
-            console.log(array_key);
             $.each( array_key, function( key_priority, ordenation ) {
                     list_transaction = list_priority[ordenation];
                     $.each( list_transaction, function( key_transaction, transaction ) {
@@ -136,13 +118,10 @@ AppAsset::register($this);
                         html += '<td>'+transaction[6]+' - '+transaction[1]+'</td>'
                         html += '<td class="process">process</td>'
                         html += '</tr>';
-                        console.log(html)
                         $("#table").append(html);
                         sendTransaction(transaction, id);
                     });
-                //key_priority = parseInt(key_priority) - 1;
             });
-            //prepareSendTransaction(list_priority);
             
         }
 
@@ -174,7 +153,6 @@ AppAsset::register($this);
                 'MerchantKey':'c9b8afdc-c21e-4161-8a65-92202123029c'
             },
             success:function( data ) {
-                //console.log(data);
                 if (data){
                     success(id, transaction);
                     saveLog(transaction, 'success', data);
@@ -200,8 +178,6 @@ AppAsset::register($this);
             $('#'+id).addClass("danger");
             $('#'+id+" .process").html("Error");
         }
-
-
 
 
         function saveLog(transaction, status, data){
